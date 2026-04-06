@@ -228,6 +228,14 @@ def set_default_duration(cfg, durationCombo):
     else:
         durationCombo.setCurrentIndex(Config.DEFAULT_DURATION_IDX)
 
+def _get_full_command_bins(cfg):
+    if cfg.hasKey(cfg.DEFAULT_POPUP_ADVANCED_FULL_COMMAND):
+        full_cmds = cfg.getSettings(cfg.DEFAULT_POPUP_ADVANCED_FULL_COMMAND)
+        if full_cmds is not None:
+            return [x.strip() for x in full_cmds.split(",") if x.strip()]
+        return []
+    return constants.FULL_COMMAND_BIN
+
 def set_default_target(combo, con, cfg, app_name, app_args):
     # set appimage as default target if the process path starts with
     # /tmp/._mount
@@ -244,7 +252,7 @@ def set_default_target(combo, con, cfg, app_name, app_args):
             return
     # entire command as default target for "dangerous" commands
     # (e.g. curl, wget, node)
-    elif any(connection_path.name.startswith(bin) for bin in constants.FULL_COMMAND_BIN):
+    elif any(connection_path.name.startswith(bin) for bin in _get_full_command_bins(cfg)):
         combo.setCurrentIndex(1)
         return
 
